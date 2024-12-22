@@ -45,103 +45,130 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentLocale = Localizations.localeOf(context).languageCode;
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, state) {
+        final currentLocale = Localizations.localeOf(context).languageCode;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppTranslations.translations[currentLocale]
-                ?['settingsTitle'] ??
-            ''),
-      ),
-      body: BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, state) {
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                // Theme Toggle
-                ListTile(
-                  title: Text(AppTranslations.translations[currentLocale]
-                          ?['darkMode'] ??
-                      ''),
-                  trailing: Switch(
-                    value: state.isDarkMode,
-                    onChanged: (value) {
-                      context.read<SettingsCubit>().toggleTheme();
-                    },
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-
-                // Language Dropdown
-                ListTile(
-                  title: Text(AppTranslations.translations[currentLocale]
-                          ?['language'] ??
-                      ''),
-                  trailing: DropdownButton<String>(
-                    value: state.currentLanguage,
-                    onChanged: (String? newValue) {
-                      if (newValue != null) {
-                        context.read<SettingsCubit>().changeLanguage(newValue);
-                      }
-                    },
-                    items: Languages.supported.entries
-                        .map<DropdownMenuItem<String>>(
-                          (entry) => DropdownMenuItem<String>(
-                            value: entry.key,
-                            child: Text(entry.value),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-
-                // Color Picker
-                ListTile(
-                  title: const Text('Theme Color'),
-                  trailing: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: state.primaryColor,
-                      shape: BoxShape.circle,
+        return Directionality(
+          textDirection: AppThemes.isRTL(currentLocale)
+              ? TextDirection.rtl
+              : TextDirection.ltr,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(
+                AppTranslations.translations[currentLocale]?['settingsTitle'] ??
+                    '',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ),
+            body: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: AppThemes.isRTL(currentLocale)
+                    ? CrossAxisAlignment.end
+                    : CrossAxisAlignment.start,
+                children: [
+                  // Theme Toggle
+                  ListTile(
+                    title: Text(
+                      AppTranslations.translations[currentLocale]
+                              ?['darkMode'] ??
+                          '',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    trailing: Switch(
+                      value: state.isDarkMode,
+                      onChanged: (value) {
+                        context.read<SettingsCubit>().toggleTheme();
+                      },
                     ),
                   ),
-                  onTap: () => _showColorPicker(context, state.primaryColor),
-                ),
 
-                const SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
-                // Font Family Dropdown
-                ListTile(
-                  title: Text(AppTranslations.translations[currentLocale]
-                          ?['fontFamily'] ??
-                      'Font Family'),
-                  trailing: DropdownButton<String>(
-                    value: state.fontFamily,
-                    onChanged: (String? newFont) {
-                      if (newFont != null) {
-                        context.read<SettingsCubit>().updateFontFamily(newFont);
-                      }
-                    },
-                    items: AppThemes.availableFonts
-                        .map<DropdownMenuItem<String>>(
-                          (String font) => DropdownMenuItem<String>(
-                            value: font,
-                            child: Text(font),
-                          ),
-                        )
-                        .toList(),
+                  // Language Dropdown
+                  ListTile(
+                    title: Text(AppTranslations.translations[currentLocale]
+                            ?['language'] ??
+                        ''),
+                    trailing: DropdownButton<String>(
+                      value: state.currentLanguage,
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          context
+                              .read<SettingsCubit>()
+                              .changeLanguage(newValue);
+                        }
+                      },
+                      items: Languages.supported.entries
+                          .map<DropdownMenuItem<String>>(
+                            (entry) => DropdownMenuItem<String>(
+                              value: entry.key,
+                              child: Text(entry.value),
+                            ),
+                          )
+                          .toList(),
+                    ),
                   ),
-                ),
-              ],
+
+                  const SizedBox(height: 16),
+
+                  // Color Picker
+                  ListTile(
+                    title: const Text('Theme Color'),
+                    trailing: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: state.primaryColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    onTap: () => _showColorPicker(context, state.primaryColor),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Font Family Dropdown
+                  ListTile(
+                    title: Text(AppTranslations.translations[currentLocale]
+                            ?['fontFamily'] ??
+                        'Font Family'),
+                    trailing: DropdownButton<String>(
+                      value: state.fontFamily,
+                      onChanged: (String? newFont) {
+                        if (newFont != null) {
+                          context
+                              .read<SettingsCubit>()
+                              .updateFontFamily(newFont);
+                        }
+                      },
+                      items: AppThemes.availableFonts
+                          .map<DropdownMenuItem<String>>(
+                            (String font) => DropdownMenuItem<String>(
+                              value: font,
+                              child: Text(
+                                font,
+                                style: TextStyle(
+                                  fontFamily: font,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

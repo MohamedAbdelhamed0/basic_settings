@@ -3,6 +3,7 @@ import 'package:basic_settings/settings/presenter/controllers/cubit/settings_cub
 import 'package:basic_settings/settings/presenter/controllers/cubit/settings_state.dart';
 import 'package:basic_settings/settings/themes/app_themes.dart';
 import 'package:basic_settings/settings/ui/home_screen.dart';
+import 'package:basic_settings/settings/ui/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -25,9 +26,12 @@ class MyApp extends StatelessWidget {
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, state) {
         return MaterialApp(
-          // Add a key to force rebuild when settings change
-          key: ValueKey(
-              '${state.fontFamily}-${state.currentLanguage}-${state.isDarkMode}'),
+          // Removed the key that was causing navigation reset
+          initialRoute: '/',
+          routes: {
+            '/': (context) => const HomeScreen(),
+            '/settings': (context) => const SettingsScreen(),
+          },
           theme: AppThemes.lightTheme(
             seedColor: state.primaryColor,
             fontFamily: state.fontFamily,
@@ -58,7 +62,6 @@ class MyApp extends StatelessWidget {
             }
             return locale;
           },
-          home: const HomeScreen(),
         );
       },
     );
