@@ -31,7 +31,13 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   Future<void> changeLanguage(String languageCode) async {
     await _repository.saveLanguage(languageCode);
-    emit(state.copyWith(currentLanguage: languageCode));
+    // Set default font for the language
+    String newFont = languageCode == 'ar' ? 'Cairo' : 'Roboto';
+    await _repository.saveFontFamily(newFont);
+    emit(state.copyWith(
+      currentLanguage: languageCode,
+      fontFamily: newFont,
+    ));
   }
 
   Future<void> updateThemeColor(Color color) async {

@@ -7,7 +7,6 @@ import 'package:basic_settings/settings/ui/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'settings/l10n/app_translations.dart';
 
 void main() {
   runApp(
@@ -26,7 +25,7 @@ class MyApp extends StatelessWidget {
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, state) {
         return MaterialApp(
-          // Removed the key that was causing navigation reset
+          themeAnimationCurve: Curves.easeInOutCirc,
           initialRoute: '/',
           routes: {
             '/': (context) => const HomeScreen(),

@@ -15,6 +15,19 @@ class AppThemes {
     'Ubuntu',
   ];
 
+  static final arabicFonts = [
+    'Cairo',
+    'Almarai',
+    'Tajawal',
+    'Amiri',
+    'Lateef',
+    'Scheherazade',
+    'Harmattan',
+    'ElMessiri',
+    'Changa',
+    'Reem Kufi',
+  ];
+
   static bool isRTL(String languageCode) {
     return ['ar', 'fa', 'he', 'ur'].contains(languageCode);
   }
@@ -23,7 +36,49 @@ class AppThemes {
     return isRTL(languageCode) ? TextAlign.right : TextAlign.left;
   }
 
-  static TextTheme _getTextTheme(String fontFamily) {
+  static String getDefaultFontForLanguage(String languageCode) {
+    return languageCode == 'ar' ? 'Cairo' : 'Roboto';
+  }
+
+  static bool isFontValidForLanguage(String fontFamily, String languageCode) {
+    return getFontsForLanguage(languageCode).contains(fontFamily);
+  }
+
+  static TextTheme _getTextTheme(String fontFamily, String languageCode) {
+    // Ensure we're using a valid font for the language
+    if (!isFontValidForLanguage(fontFamily, languageCode)) {
+      fontFamily = getDefaultFontForLanguage(languageCode);
+    }
+
+    // If language is Arabic, use Arabic fonts
+    if (languageCode == 'ar') {
+      switch (fontFamily) {
+        case 'Cairo':
+          return GoogleFonts.cairoTextTheme();
+        case 'Almarai':
+          return GoogleFonts.almaraiTextTheme();
+        case 'Tajawal':
+          return GoogleFonts.tajawalTextTheme();
+        case 'Amiri':
+          return GoogleFonts.amiriTextTheme();
+        case 'Lateef':
+          return GoogleFonts.lateefTextTheme();
+        case 'Scheherazade':
+          return GoogleFonts.scheherazadeNewTextTheme();
+        case 'Harmattan':
+          return GoogleFonts.harmattanTextTheme();
+        case 'ElMessiri':
+          return GoogleFonts.elMessiriTextTheme();
+        case 'Changa':
+          return GoogleFonts.changaTextTheme();
+        case 'Reem Kufi':
+          return GoogleFonts.reemKufiTextTheme();
+        default:
+          return GoogleFonts.cairoTextTheme(); // Default Arabic font
+      }
+    }
+
+    // For non-Arabic languages, use existing fonts
     switch (fontFamily) {
       case 'Lato':
         return GoogleFonts.latoTextTheme();
@@ -60,7 +115,7 @@ class AppThemes {
     );
 
     return baseTheme.copyWith(
-      textTheme: _getTextTheme(fontFamily).apply(
+      textTheme: _getTextTheme(fontFamily, languageCode).apply(
         bodyColor: baseTheme.colorScheme.onBackground,
         displayColor: baseTheme.colorScheme.onBackground,
       ),
@@ -82,10 +137,14 @@ class AppThemes {
     );
 
     return baseTheme.copyWith(
-      textTheme: _getTextTheme(fontFamily).apply(
+      textTheme: _getTextTheme(fontFamily, languageCode).apply(
         bodyColor: baseTheme.colorScheme.onBackground,
         displayColor: baseTheme.colorScheme.onBackground,
       ),
     );
+  }
+
+  static List<String> getFontsForLanguage(String languageCode) {
+    return languageCode == 'ar' ? arabicFonts : availableFonts;
   }
 }
