@@ -4,6 +4,8 @@ import 'package:basic_settings/settings/presenter/controllers/cubit/settings_sta
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:animations/animations.dart';
+import '../helpers/animations_helper.dart';
 import '../l10n/app_translations.dart';
 import '../themes/app_themes.dart';
 
@@ -81,9 +83,12 @@ class SettingsScreen extends StatelessWidget {
                     '',
                 style: theme.textTheme.titleLarge,
               ),
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                onPressed: () => Navigator.of(context).pop(),
+              leading: AnimationsHelper.containerTransform(
+                closedBuilder: (context, openContainer) => IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                openBuilder: (context, _) => const SettingsScreen(),
               ),
             ),
             body: SingleChildScrollView(
@@ -173,36 +178,30 @@ class SettingsScreen extends StatelessWidget {
                       context),
                   Card(
                     elevation: 2,
-                    child: ListTile(
-                      leading: const Icon(Icons.translate_outlined),
-                      title: Text(
-                        AppTranslations.translations[currentLocale]
-                                ?['language'] ??
-                            '',
-                        style: theme.textTheme.titleMedium,
-                      ),
-                      subtitle: Text(
-                        AppTranslations.translations[currentLocale]
-                                ?['languageSubtitle'] ??
-                            '',
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                      trailing: DropdownButton<String>(
-                        value: state.currentLanguage,
-                        underline: const SizedBox(),
-                        icon: const Icon(Icons.arrow_drop_down),
-                        onChanged: (String? newValue) {
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: DropdownMenu<String>(
+                        width: MediaQuery.of(context).size.width - 64,
+                        leadingIcon: const Icon(Icons.translate_outlined),
+                        label: Text(
+                          AppTranslations.translations[currentLocale]
+                                  ?['language'] ??
+                              '',
+                        ),
+                        initialSelection: state.currentLanguage,
+                        onSelected: (String? newValue) {
                           if (newValue != null) {
                             context
                                 .read<SettingsCubit>()
                                 .changeLanguage(newValue);
                           }
                         },
-                        items: Languages.supported.entries
-                            .map<DropdownMenuItem<String>>(
-                              (entry) => DropdownMenuItem<String>(
+                        dropdownMenuEntries: Languages.supported.entries
+                            .map<DropdownMenuEntry<String>>(
+                              (entry) => DropdownMenuEntry<String>(
                                 value: entry.key,
-                                child: Text(entry.value),
+                                label: entry.value,
+                                leadingIcon: const Icon(Icons.language),
                               ),
                             )
                             .toList(),
@@ -219,49 +218,44 @@ class SettingsScreen extends StatelessWidget {
                       context),
                   Card(
                     elevation: 2,
-                    child: ListTile(
-                      leading: const Icon(Icons.font_download_outlined),
-                      title: Text(
-                        AppTranslations.translations[currentLocale]
-                                ?['fontFamily'] ??
-                            'Font Family',
-                        style: theme.textTheme.titleMedium,
-                      ),
-                      subtitle: Text(
-                        AppTranslations.translations[currentLocale]
-                                ?['fontFamilySubtitle'] ??
-                            '',
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                      trailing: DropdownButton<String>(
-                        value: AppThemes.isFontValidForLanguage(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: DropdownMenu<String>(
+                        width: MediaQuery.of(context).size.width - 64,
+                        leadingIcon: const Icon(Icons.font_download_outlined),
+                        label: Text(
+                          AppTranslations.translations[currentLocale]
+                                  ?['fontFamily'] ??
+                              'Font Family',
+                        ),
+                        initialSelection: AppThemes.isFontValidForLanguage(
                                 state.fontFamily, currentLocale)
                             ? state.fontFamily
                             : AppThemes.getDefaultFontForLanguage(
                                 currentLocale),
-                        underline: const SizedBox(),
-                        icon: const Icon(Icons.arrow_drop_down),
-                        onChanged: (String? newFont) {
+                        onSelected: (String? newFont) {
                           if (newFont != null) {
                             context
                                 .read<SettingsCubit>()
                                 .updateFontFamily(newFont);
                           }
                         },
-                        items: AppThemes.getFontsForLanguage(currentLocale)
-                            .map<DropdownMenuItem<String>>(
-                              (String font) => DropdownMenuItem<String>(
-                                value: font,
-                                child: Text(
-                                  font,
-                                  style: TextStyle(
-                                    fontFamily: font,
-                                    fontSize: 16,
+                        dropdownMenuEntries:
+                            AppThemes.getFontsForLanguage(currentLocale)
+                                .map<DropdownMenuEntry<String>>(
+                                  (String font) => DropdownMenuEntry<String>(
+                                    value: font,
+                                    label: font,
+                                    leadingIcon:
+                                        const Icon(Icons.font_download),
+                                    style: ButtonStyle(
+                                      textStyle: MaterialStatePropertyAll(
+                                        TextStyle(fontFamily: font),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            )
-                            .toList(),
+                                )
+                                .toList(),
                       ),
                     ),
                   ),

@@ -50,57 +50,68 @@ class AppThemes {
       fontFamily = getDefaultFontForLanguage(languageCode);
     }
 
+    TextTheme baseTheme;
     // If language is Arabic, use Arabic fonts
     if (languageCode == 'ar') {
-      switch (fontFamily) {
-        case 'Cairo':
-          return GoogleFonts.cairoTextTheme();
-        case 'Almarai':
-          return GoogleFonts.almaraiTextTheme();
-        case 'Tajawal':
-          return GoogleFonts.tajawalTextTheme();
-        case 'Amiri':
-          return GoogleFonts.amiriTextTheme();
-        case 'Lateef':
-          return GoogleFonts.lateefTextTheme();
-        case 'Scheherazade':
-          return GoogleFonts.scheherazadeNewTextTheme();
-        case 'Harmattan':
-          return GoogleFonts.harmattanTextTheme();
-        case 'ElMessiri':
-          return GoogleFonts.elMessiriTextTheme();
-        case 'Changa':
-          return GoogleFonts.changaTextTheme();
-        case 'Reem Kufi':
-          return GoogleFonts.reemKufiTextTheme();
-        default:
-          return GoogleFonts.cairoTextTheme(); // Default Arabic font
-      }
+      baseTheme = switch (fontFamily) {
+        'Cairo' => GoogleFonts.cairoTextTheme(),
+        'Almarai' => GoogleFonts.almaraiTextTheme(),
+        'Tajawal' => GoogleFonts.tajawalTextTheme(),
+        'Amiri' => GoogleFonts.amiriTextTheme(),
+        'Lateef' => GoogleFonts.lateefTextTheme(),
+        'Scheherazade' => GoogleFonts.scheherazadeNewTextTheme(),
+        'Harmattan' => GoogleFonts.harmattanTextTheme(),
+        'ElMessiri' => GoogleFonts.elMessiriTextTheme(),
+        'Changa' => GoogleFonts.changaTextTheme(),
+        'Reem Kufi' => GoogleFonts.reemKufiTextTheme(),
+        _ => GoogleFonts.cairoTextTheme(),
+      };
+    } else {
+      baseTheme = switch (fontFamily) {
+        'Lato' => GoogleFonts.latoTextTheme(),
+        'OpenSans' => GoogleFonts.openSansTextTheme(),
+        'Montserrat' => GoogleFonts.montserratTextTheme(),
+        'Raleway' => GoogleFonts.ralewayTextTheme(),
+        'Poppins' => GoogleFonts.poppinsTextTheme(),
+        'PlayfairDisplay' => GoogleFonts.playfairDisplayTextTheme(),
+        'Quicksand' => GoogleFonts.quicksandTextTheme(),
+        'SourceSansPro' => GoogleFonts.sourceCodeProTextTheme(),
+        'Ubuntu' => GoogleFonts.ubuntuTextTheme(),
+        _ => GoogleFonts.robotoTextTheme(),
+      };
     }
 
-    // For non-Arabic languages, use existing fonts
-    switch (fontFamily) {
-      case 'Lato':
-        return GoogleFonts.latoTextTheme();
-      case 'OpenSans':
-        return GoogleFonts.openSansTextTheme();
-      case 'Montserrat':
-        return GoogleFonts.montserratTextTheme();
-      case 'Raleway':
-        return GoogleFonts.ralewayTextTheme();
-      case 'Poppins':
-        return GoogleFonts.poppinsTextTheme();
-      case 'PlayfairDisplay':
-        return GoogleFonts.playfairDisplayTextTheme();
-      case 'Quicksand':
-        return GoogleFonts.quicksandTextTheme();
-      case 'SourceSansPro':
-        return GoogleFonts.sourceCodeProTextTheme();
-      case 'Ubuntu':
-        return GoogleFonts.ubuntuTextTheme();
-      default:
-        return GoogleFonts.robotoTextTheme();
-    }
+    // Apply overflow ellipsis to all text styles
+    return baseTheme.copyWith(
+      bodyLarge: baseTheme.bodyLarge?.copyWith(overflow: TextOverflow.ellipsis),
+      bodyMedium:
+          baseTheme.bodyMedium?.copyWith(overflow: TextOverflow.ellipsis),
+      bodySmall: baseTheme.bodySmall?.copyWith(overflow: TextOverflow.ellipsis),
+      displayLarge:
+          baseTheme.displayLarge?.copyWith(overflow: TextOverflow.ellipsis),
+      displayMedium:
+          baseTheme.displayMedium?.copyWith(overflow: TextOverflow.ellipsis),
+      displaySmall:
+          baseTheme.displaySmall?.copyWith(overflow: TextOverflow.ellipsis),
+      headlineLarge:
+          baseTheme.headlineLarge?.copyWith(overflow: TextOverflow.ellipsis),
+      headlineMedium:
+          baseTheme.headlineMedium?.copyWith(overflow: TextOverflow.ellipsis),
+      headlineSmall:
+          baseTheme.headlineSmall?.copyWith(overflow: TextOverflow.ellipsis),
+      titleLarge:
+          baseTheme.titleLarge?.copyWith(overflow: TextOverflow.ellipsis),
+      titleMedium:
+          baseTheme.titleMedium?.copyWith(overflow: TextOverflow.ellipsis),
+      titleSmall:
+          baseTheme.titleSmall?.copyWith(overflow: TextOverflow.ellipsis),
+      labelLarge:
+          baseTheme.labelLarge?.copyWith(overflow: TextOverflow.ellipsis),
+      labelMedium:
+          baseTheme.labelMedium?.copyWith(overflow: TextOverflow.ellipsis),
+      labelSmall:
+          baseTheme.labelSmall?.copyWith(overflow: TextOverflow.ellipsis),
+    );
   }
 
   static ThemeData lightTheme({
@@ -118,6 +129,36 @@ class AppThemes {
       textTheme: _getTextTheme(fontFamily, languageCode).apply(
         bodyColor: baseTheme.colorScheme.onBackground,
         displayColor: baseTheme.colorScheme.onBackground,
+      ),
+      dropdownMenuTheme: DropdownMenuThemeData(
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: baseTheme.colorScheme.surfaceVariant.withOpacity(0.5),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: baseTheme.colorScheme.outline),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: baseTheme.colorScheme.outline),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide:
+                BorderSide(color: baseTheme.colorScheme.primary, width: 2),
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        ),
+        menuStyle: MenuStyle(
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          elevation: MaterialStateProperty.all(6),
+          backgroundColor: MaterialStateProperty.all(
+            baseTheme.colorScheme.surface,
+          ),
+        ),
       ),
     );
   }
@@ -140,6 +181,36 @@ class AppThemes {
       textTheme: _getTextTheme(fontFamily, languageCode).apply(
         bodyColor: baseTheme.colorScheme.onBackground,
         displayColor: baseTheme.colorScheme.onBackground,
+      ),
+      dropdownMenuTheme: DropdownMenuThemeData(
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: baseTheme.colorScheme.surfaceVariant.withOpacity(0.5),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: baseTheme.colorScheme.outline),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: baseTheme.colorScheme.outline),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide:
+                BorderSide(color: baseTheme.colorScheme.primary, width: 2),
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        ),
+        menuStyle: MenuStyle(
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          elevation: MaterialStateProperty.all(6),
+          backgroundColor: MaterialStateProperty.all(
+            baseTheme.colorScheme.surface,
+          ),
+        ),
       ),
     );
   }

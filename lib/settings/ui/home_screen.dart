@@ -2,10 +2,12 @@ import 'package:basic_settings/settings/constants.dart';
 import 'package:basic_settings/settings/presenter/controllers/cubit/settings_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:animations/animations.dart';
 import '../l10n/app_translations.dart';
 import '../themes/app_themes.dart';
 import 'settings_screen.dart';
 import '../presenter/controllers/cubit/settings_state.dart';
+import 'custom_page_route.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -32,19 +34,19 @@ class HomeScreen extends StatelessWidget {
               actions: [
                 Padding(
                   padding: const EdgeInsets.only(right: 8.0),
-                  child: IconButton(
-                    icon: const Icon(Icons.settings_outlined),
-                    tooltip: AppTranslations.translations[currentLocale]
-                            ?['settingsTitle'] ??
-                        '',
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SettingsScreen(),
-                        ),
-                      );
-                    },
+                  child: OpenContainer(
+                    transitionDuration: const Duration(milliseconds: 500),
+                    openBuilder: (context, _) => const SettingsScreen(),
+                    closedElevation: 0,
+                    closedShape: const CircleBorder(),
+                    closedColor: Colors.transparent,
+                    closedBuilder: (context, openContainer) => IconButton(
+                      icon: const Icon(Icons.settings_outlined),
+                      tooltip: AppTranslations.translations[currentLocale]
+                              ?['settingsTitle'] ??
+                          '',
+                      onPressed: openContainer,
+                    ),
                   ),
                 ),
               ],
@@ -275,6 +277,34 @@ class HomeScreen extends StatelessWidget {
                                 style: theme.textTheme.titleLarge,
                               ),
                             ],
+                          ),
+                          const SizedBox(height: 16),
+                          // Add Dropdown Menu here
+                          DropdownMenu<String>(
+                            width: MediaQuery.of(context).size.width - 64,
+                            initialSelection: 'option1',
+                            leadingIcon: const Icon(Icons.menu),
+                            label: const Text('Dropdown Example'),
+                            dropdownMenuEntries: [
+                              DropdownMenuEntry(
+                                value: 'option1',
+                                label: 'Option 1',
+                                leadingIcon: const Icon(Icons.looks_one),
+                              ),
+                              DropdownMenuEntry(
+                                value: 'option2',
+                                label: 'Option 2',
+                                leadingIcon: const Icon(Icons.looks_two),
+                              ),
+                              DropdownMenuEntry(
+                                value: 'option3',
+                                label: 'Option 3',
+                                leadingIcon: const Icon(Icons.looks_3),
+                              ),
+                            ],
+                            onSelected: (value) {
+                              // Handle selection
+                            },
                           ),
                           const SizedBox(height: 16),
                           Row(
