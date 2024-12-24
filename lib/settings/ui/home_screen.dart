@@ -1,13 +1,13 @@
+import 'package:animations/animations.dart';
 import 'package:basic_settings/settings/constants.dart';
 import 'package:basic_settings/settings/presenter/controllers/cubit/settings_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:animations/animations.dart';
+
 import '../l10n/app_translations.dart';
+import '../presenter/controllers/cubit/settings_state.dart';
 import '../themes/app_themes.dart';
 import 'settings_screen.dart';
-import '../presenter/controllers/cubit/settings_state.dart';
-import 'custom_page_route.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
           child: Scaffold(
             appBar: AppBar(
               title: Text(
-                AppTranslations.translations[currentLocale]?['helloWorld'] ??
+                AppTranslations.translations[currentLocale]?['helloWorldd'] ??
                     '',
                 style: theme.textTheme.titleLarge,
               ),
